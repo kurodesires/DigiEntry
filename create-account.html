@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d1931"><title>DigiEntry · Create staff account</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="staff.css"></head>
+<body class="staff-page">
+  <main class="auth-shell">
+    <a class="wordmark auth-wordmark" href="/"><span class="brand-symbol">D</span><span>DigiEntry</span></a>
+    <section class="auth-card">
+      <p class="kicker">CAMPUS STAFF PORTAL</p><h1>Create account</h1><p class="muted">Create an account for an ACT Bulacao campus staff member.</p>
+      <form id="createAccountForm">
+        <label for="newStaffName">Full name</label><input id="newStaffName" name="name" autocomplete="name" maxlength="120" required placeholder="Your full name">
+        <label for="newStaffRank">Campus rank</label><select id="newStaffRank" name="rank" required><option value="">Select your rank</option><option>Principal</option><option>Vice Principal</option><option>Teacher</option></select>
+        <label for="newStaffPassword">Staff password</label><input id="newStaffPassword" name="password" type="password" autocomplete="new-password" required placeholder="Campus staff password" aria-describedby="staffPasswordHint"><small id="staffPasswordHint" class="input-hint">Enter the staff access password provided by the campus.</small>
+        <button class="enter-button submit-button" type="submit">Create account <span>→</span></button><p class="form-message" id="createAccountMessage" role="status"></p>
+      </form>
+      <p class="create-account-prompt">Already registered? <a href="admin.html">Log in</a></p>
+      <a class="back-link" href="/">← Back to visitor page</a>
+      <div id="createAccountSuccess" class="create-account-success" hidden><strong>Account created.</strong><span>You can now log in with your full name and the staff password.</span><a class="enter-button" href="admin.html">Go to log in <span>→</span></a></div>
+    </section>
+    <p class="auth-footer">Asian College of Technology · Bulacao Campus</p>
+  </main>
+  <script src="create-account.js" defer></script>
+</body></html>

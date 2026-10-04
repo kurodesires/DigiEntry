@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0d1931"><title>DigiEntry · Campus staff</title><link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="staff.css"></head>
+<body class="staff-page">
+  <main id="authView" class="auth-shell">
+    <a class="wordmark auth-wordmark" href="/"><span class="brand-symbol">D</span><span>DigiEntry</span></a>
+    <section class="auth-card">
+      <p class="kicker">CAMPUS STAFF PORTAL</p><h1>Log in</h1><p class="muted">Sign in to review the current visitor waiting list.</p>
+      <form id="authForm"><label for="staffName">Full name</label><input id="staffName" name="name" autocomplete="name" maxlength="120" placeholder="Your full name" required>
+        <label for="staffPassword">Password</label><input id="staffPassword" name="password" type="password" autocomplete="current-password" required placeholder="Campus staff password">
+        <button class="enter-button submit-button" id="authSubmit" type="submit">Log in <span>→</span></button><p class="form-message" id="authMessage" role="status"></p>
+      </form>
+      <p class="create-account-prompt">Need a staff account? <a href="create-account.html">Create account</a></p>
+      <a class="back-link" href="/">← Back to visitor page</a>
+    </section>
+    <p class="auth-footer">Asian College of Technology · Bulacao Campus</p>
+  </main>
+  <main id="dashboardView" class="dashboard-shell" hidden>
+    <aside class="dashboard-sidebar"><a class="wordmark" href="/"><span class="brand-symbol">D</span><span>DigiEntry</span></a><div class="campus-label">ACT · BULACAO CAMPUS</div><nav><a class="side-item active" href="#requests"><span>▤</span> Waiting list <span class="nav-count" id="pendingNavCount">0</span></a><a class="side-item" href="#history"><span>◷</span> Visit history</a></nav><div class="sidebar-bottom"><span class="secure-dot"></span> System online</div></aside>
+    <section class="dashboard-main"><header class="dashboard-header"><div><p class="kicker">CAMPUS ACCESS</p><h1>Good day, <span id="welcomeName">Staff</span></h1><p class="muted">Review requests and manage today’s campus visits.</p></div><div class="staff-menu"><span class="staff-badge" id="staffBadge">Staff</span><button class="quiet-button" id="logoutButton">Sign out</button></div></header>
+      <div class="summary-grid"><article class="summary-card"><span>WAITING FOR REVIEW</span><strong id="pendingCount">0</strong><small>Visitor requests</small></article><article class="summary-card"><span>APPROVED</span><strong id="approvedCount">0</strong><small>Passes issued</small></article><article class="summary-card"><span>CHECKED IN</span><strong id="checkedInCount">0</strong><small>Visitors on campus</small></article></div>
+      <section class="dashboard-panel" id="requests"><div class="section-heading"><div><p class="kicker">NEEDS YOUR REVIEW</p><h2>Visitor queue</h2></div><button class="quiet-button" id="refreshButton">Refresh ↻</button></div><div id="requestList" class="request-list"></div><div class="empty-panel" id="requestEmpty" hidden><span>✓</span><strong>You’re all caught up</strong><p>New visitor requests will appear here.</p></div></section>
+      <section class="dashboard-panel" id="history"><div class="section-heading"><div><p class="kicker">CAMPUS ACTIVITY</p><h2>Visit history</h2></div><label class="filter-label">Filter <select id="historyFilter"><option value="all">All visits</option><option value="checked_in">Checked in</option><option value="accepted">Approved</option><option value="declined">Declined</option></select></label></div><div id="historyList" class="history-list"></div><div class="empty-panel" id="historyEmpty" hidden><p>No visit history to show.</p></div></section>
+      <footer class="dashboard-footer">DigiEntry · Asian College of Technology, Bulacao Campus</footer>
+    </section>
+  </main>
+  <div class="modal-backdrop" id="slipModal" hidden><section class="request-modal slip-modal" role="dialog" aria-modal="true" aria-labelledby="slipTitle"><button class="modal-close" id="closeSlip" aria-label="Close">×</button><p class="kicker">VISITOR ENTRY SLIP</p><h2 id="slipTitle">Request details</h2><div id="slipDetails" class="slip-details"></div><div class="slip-actions"><button class="decision-button accept" id="slipAccept">Accept request</button><button class="decision-button decline" id="slipDecline">Decline request</button></div></section></div>
+  <script src="admin.js" defer></script>
+</body></html>

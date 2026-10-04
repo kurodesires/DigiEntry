@@ -1,0 +1,9 @@
+{
+  "name": "digientry-act-bulacao",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Campus visitor request, approval, email pass, and QR check-in service.",
+  "scripts": { "start": "node --env-file-if-exists=.env server.js", "dev": "node --env-file-if-exists=.env --watch server.js" },
+  "engines": { "node": ">=22.13" },
+  "dependencies": { "express": "^5.1.0", "nodemailer": "^7.0.5", "qrcode": "^1.5.4" }
+}

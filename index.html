@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1931">
+  <title>DigiEntry · ACT Bulacao Campus</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="visitor-page">
+  <main class="visitor-shell">
+    <header class="visitor-nav"><a class="wordmark" href="/"><span class="brand-symbol">D</span><span>DigiEntry</span></a><a class="staff-link" href="admin.html">Campus staff <span>↗</span></a></header>
+    <section class="visitor-hero">
+      <img class="campus-logo" src="https://cdn.corenexis.com/f/W3ycKFJg5V8.png" alt="Asian College of Technology logo" onerror="this.hidden=true">
+      <p class="kicker">ASIAN COLLEGE OF TECHNOLOGY · BULACAO CAMPUS</p>
+      <h1>Every campus visit<br><span>starts with a welcome.</span></h1>
+      <p class="hero-copy">Give a form to the principal or vice principal with ease.</p>
+      <button class="enter-button" id="startRequest">Enter <span>→</span></button>
+      <p class="secure-note"><span class="secure-dot"></span> Your request goes directly to campus administrators</p>
+    </section>
+    <footer class="visitor-footer"><span>Asian College of Technology · Bulacao Campus</span><span>Visitor access portal</span></footer>
+  </main>
+  <div class="modal-backdrop" id="requestModal" hidden>
+    <section class="request-modal" role="dialog" aria-modal="true" aria-labelledby="requestTitle">
+      <button class="modal-close" id="closeRequest" aria-label="Close">×</button>
+      <p class="kicker">VISITOR REQUEST</p><h2 id="requestTitle">Tell us about your visit</h2>
+      <p class="muted">A principal or vice principal will review your request. We’ll email you their decision and your QR pass.</p>
+      <form id="visitorForm">
+        <label for="visitorName">Full name</label><input id="visitorName" name="name" autocomplete="name" required maxlength="120" placeholder="Your first and last name">
+        <div class="form-split"><div><label for="visitorPhone">Contact number</label><input id="visitorPhone" name="phone" type="tel" autocomplete="tel" required maxlength="30" placeholder="09XX XXX XXXX"></div><div><label for="visitorEmail">Email address</label><input id="visitorEmail" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@example.com"></div></div>
+        <label for="visitorReason">Reason for entering campus</label><textarea id="visitorReason" name="reason" rows="3" required maxlength="500" placeholder="Briefly describe who or what you are visiting"></textarea>
+        <button class="enter-button submit-button" type="submit">Send for review <span>→</span></button><p class="form-message" id="requestMessage" role="status"></p>
+      </form>
+      <div class="request-success" id="requestSuccess" hidden><div class="success-icon">✓</div><h3>Request sent</h3><p>Your request reference is <strong id="requestReference"></strong>. We’ll email you when a decision is made.</p><button class="quiet-button" id="doneRequest">Done</button></div>
+      <p class="privacy-note">Please use an email address you can access. Your QR pass is issued with the decision.</p>
+    </section>
+  </div>
+  <script src="visitor.js" defer></script>
+</body>
+</html>
