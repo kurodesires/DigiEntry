@@ -43,6 +43,61 @@ function base64Bytes(bytes) {
   return btoa(binary);
 }
 
+function pngChunk(type, data) {
+  const typeBytes = new TextEncoder().encode(type);
+  const payload = new Uint8Array(typeBytes.length + data.length);
+  payload.set(typeBytes);
+  payload.set(data, typeBytes.length);
+  let crc = 0xffffffff;
+  for (const byte of payload) {
+    crc ^= byte;
+    for (let bit = 0; bit < 8; bit++) crc = (crc >>> 1) ^ (0xedb88320 & -(crc & 1));
+  }
+  crc = (crc ^ 0xffffffff) >>> 0;
+  const chunk = new Uint8Array(12 + data.length);
+  const view = new DataView(chunk.buffer);
+  view.setUint32(0, data.length);
+  chunk.set(payload, 4);
+  view.setUint32(8 + payload.length, crc);
+  return chunk;
+}
+
+async function qrPng(text) {
+  const matrix = QRCode.create(text, { errorCorrectionLevel: 'M' }).modules;
+  const quiet = 4, scale = 10, side = (matrix.size + quiet * 2) * scale;
+  const stride = side * 4 + 1;
+  const pixels = new Uint8Array(stride * side);
+  for (let y = 0; y < side; y++) {
+    const row = Math.floor(y / scale) - quiet;
+    const start = y * stride;
+    pixels[start] = 0;
+    for (let x = 0; x < side; x++) {
+      const column = Math.floor(x / scale) - quiet;
+      const dark = row >= 0 && row < matrix.size && column >= 0 && column < matrix.size && matrix.data[row * matrix.size + column];
+      const pixel = start + 1 + x * 4;
+      pixels[pixel] = pixels[pixel + 1] = pixels[pixel + 2] = dark ? 0 : 255;
+      pixels[pixel + 3] = 255;
+    }
+  }
+  const header = new Uint8Array(13);
+  const headerView = new DataView(header.buffer);
+  headerView.setUint32(0, side);
+  headerView.setUint32(4, side);
+  header[8] = 8; // bit depth
+  header[9] = 6; // RGBA
+  const compressor = new CompressionStream('deflate');
+  const writer = compressor.writable.getWriter();
+  await writer.write(pixels);
+  await writer.close();
+  const compressed = new Uint8Array(await new Response(compressor.readable).arrayBuffer());
+  const signature = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+  const chunks = [signature, pngChunk('IHDR', header), pngChunk('IDAT', compressed), pngChunk('IEND', new Uint8Array())];
+  const image = new Uint8Array(chunks.reduce((total, chunk) => total + chunk.length, 0));
+  let offset = 0;
+  for (const chunk of chunks) { image.set(chunk, offset); offset += chunk.length; }
+  return image;
+}
+
 async function smtpCommand(write, readReply, command, expected) {
   await write(command);
   const response = await readReply();
@@ -55,10 +110,9 @@ async function emailDecision(row, qrToken, env) {
   const accepted = row.status === 'accepted';
   const heading = accepted ? 'Your visit is approved' : 'Your visit request was declined';
   const instructions = accepted ? 'Please show the attached QR pass to the campus scanner when you arrive.' : 'Your pass records this decision. You may submit a new request with another reason for entering campus.';
-  const qrDataUrl = await QRCode.toDataURL(qrToken, { width: 360, margin: 2, errorCorrectionLevel: 'M' });
-  const qrBase64 = qrDataUrl.slice(qrDataUrl.indexOf(',') + 1);
+  const qrBase64 = base64Bytes(await qrPng(qrToken));
   const text = `Hello ${row.name},\n\n${heading}.\nReference: ${row.reference}\nReason: ${row.reason}\n\n${instructions}\n\nAsian College of Technology · Bulacao Campus`;
-  const html = `<div style="font-family:Arial,sans-serif;color:#18253b;max-width:560px;margin:auto"><div style="background:#101c35;color:white;padding:24px;border-radius:14px 14px 0 0"><strong style="font-size:18px">DigiEntry</strong><div style="font-size:11px;margin-top:8px;color:#ced7e8">ASIAN COLLEGE OF TECHNOLOGY · BULACAO CAMPUS</div></div><div style="padding:25px;border:1px solid #e7eaf0;border-top:0;border-radius:0 0 14px 14px"><h1 style="font-size:22px">${heading}</h1><p>Hello ${escapeHtml(row.name)},</p><p>${escapeHtml(instructions)}</p><p><b>Request:</b> ${escapeHtml(row.reference)}<br><b>Reason:</b> ${escapeHtml(row.reason)}</p><p>The QR visit pass is attached to this email.</p><p style="font-size:12px;color:#738097">Keep this email available when you arrive. The QR pass reflects your request decision.</p></div></div>`;
+  const html = `<div style="font-family:Arial,sans-serif;color:#18253b;max-width:560px;margin:auto"><div style="background:#101c35;color:white;padding:24px;border-radius:14px 14px 0 0"><strong style="font-size:18px">DigiEntry</strong><div style="font-size:11px;margin-top:8px;color:#ced7e8">ASIAN COLLEGE OF TECHNOLOGY · BULACAO CAMPUS</div></div><div style="padding:25px;border:1px solid #e7eaf0;border-top:0;border-radius:0 0 14px 14px"><h1 style="font-size:22px">${heading}</h1><p>Hello ${escapeHtml(row.name)},</p><p>${escapeHtml(instructions)}</p><p><b>Request:</b> ${escapeHtml(row.reference)}<br><b>Reason:</b> ${escapeHtml(row.reason)}</p><p style="text-align:center"><img alt="QR visit pass" src="cid:visitor-pass" width="240" height="240"></p><p style="font-size:12px;color:#738097">Keep this email available when you arrive. The QR pass reflects your request decision.</p></div></div>`;
   const host = env.SMTP_HOST || 'smtp.gmail.com';
   const socket = connect({ hostname: host, port: Number(env.SMTP_PORT || 465) }, { secureTransport: 'on' });
   const reader = socket.readable.getReader();
@@ -129,7 +183,8 @@ async function emailDecision(row, qrToken, env) {
       `--${boundary}`,
       `Content-Type: image/png; name="digientry-${row.reference}.png"`,
       'Content-Transfer-Encoding: base64',
-      `Content-Disposition: attachment; filename="digientry-${row.reference}.png"`,
+      `Content-Disposition: inline; filename="digientry-${row.reference}.png"`,
+      'Content-ID: <visitor-pass>',
       '',
       attachmentLines,
       `--${boundary}--`,
