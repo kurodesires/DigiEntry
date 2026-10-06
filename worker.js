@@ -58,7 +58,7 @@ function pngChunk(type, data) {
   const view = new DataView(chunk.buffer);
   view.setUint32(0, data.length);
   chunk.set(payload, 4);
-  view.setUint32(8 + payload.length, crc);
+  view.setUint32(8 + data.length, crc);
   return chunk;
 }
 
