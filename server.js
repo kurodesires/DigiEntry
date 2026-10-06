@@ -101,12 +101,12 @@ app.post('/api/auth/login', async (req,res) => {
   res.json({ staff: { name: staff.name, rank: staff.rank } });
 });
 app.post('/api/auth/register', async (req,res) => {
-  if (String(req.body?.password || '').toUpperCase() !== STAFF_SHARED_PASSWORD) return res.status(403).json({ error: 'Enter the campus staff password ACTSTAFF.' });
+  if (String(req.body?.password || '').toUpperCase() !== STAFF_SHARED_PASSWORD) return res.status(403).json({ error: 'The staff password is incorrect.' });
   return createStaff(req,res);
 });
 async function createStaff(req,res) {
   const name=String(req.body?.name||'').trim(), rank=String(req.body?.rank||''), password=String(req.body?.password||'');
-  if (name.length<2 || name.length>120 || !ranks.has(rank) || password.toUpperCase() !== STAFF_SHARED_PASSWORD) return res.status(400).json({ error: 'Enter a name, a valid campus rank and the staff password ACTSTAFF.' });
+  if (name.length<2 || name.length>120 || !ranks.has(rank) || password.toUpperCase() !== STAFF_SHARED_PASSWORD) return res.status(400).json({ error: 'Enter your full name, select a valid campus rank and enter the staff password.' });
   try {
     const id=crypto.randomUUID();
     db.prepare('INSERT INTO staff(id,name,rank,password_hash,created_at) VALUES(?,?,?,?,?)').run(id,name,rank,await passwordHash(STAFF_SHARED_PASSWORD),nowIso());
@@ -162,3 +162,4 @@ app.get('/',(req,res)=>res.sendFile(path.join(root,'index.html')));
 app.get(['/index.html','/admin.html','/create-account.html','/styles.css','/staff.css','/visitor.js','/admin.js','/create-account.js'],(req,res)=>res.sendFile(path.join(root,path.basename(req.path))));
 app.use((req,res)=>res.status(404).json({error:'Not found.'}));
 app.listen(port,()=>console.log(`DigiEntry listening on http://localhost:${port}`));
+
