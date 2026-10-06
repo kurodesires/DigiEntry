@@ -208,8 +208,9 @@ async function handleApi(request, env) {
   const url = new URL(request.url);
   const method = request.method;
   const path = url.pathname;
-  const body = method === 'POST' ? await parseBody(request) : null;
-  if (method === 'POST' && body === null) return json({ error: 'Invalid request body.' }, 400);
+  const needsBody = method === 'POST' && path !== '/api/auth/logout';
+  const body = needsBody ? await parseBody(request) : null;
+  if (needsBody && body === null) return json({ error: 'Invalid request body.' }, 400);
 
   if (method === 'GET' && path === '/api/health') return json({ ok: true, emailConfigured: Boolean(env.SMTP_USER && env.SMTP_PASS && env.MAIL_FROM), scannerConfigured: Boolean(env.SCANNER_API_KEY) });
 
@@ -328,7 +329,8 @@ export default {
       }
     }
     const asset = await env.ASSETS.fetch(request);
-    for (const [name, value] of headers) asset.headers.set(name, value);
-    return asset;
+    const response = new Response(asset.body, asset);
+    for (const [name, value] of headers) response.headers.set(name, value);
+    return response;
   }
 };
