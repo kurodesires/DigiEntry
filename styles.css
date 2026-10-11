@@ -5,11 +5,12 @@
 .visitor-page::before{background:linear-gradient(90deg,#0b1830e8,#0b1830b8 60%,#0b18309c),linear-gradient(0deg,#0b183082,transparent 55%)}
 .dashboard-shell{width:100%;max-width:none;background:linear-gradient(rgba(218,234,255,.93),rgba(218,234,255,.93)),url('https://cdn.corenexis.com/f/VDIGJYxvR0U.png') center/cover fixed no-repeat}
 .dashboard-main{background:transparent}
-.visitor-page .brand-symbol,.visitor-page .campus-logo{background:transparent;border-color:transparent;box-shadow:none}
-.visitor-page .campus-logo{padding:0}
+.visitor-page .brand-symbol,.visitor-page .campus-logo{background:transparent!important;border-color:transparent;box-shadow:none}
+.visitor-page .campus-logo{padding:0;mix-blend-mode:multiply}
 .dashboard-sidebar nav{display:grid}
 .side-item{width:100%;border:0;text-align:left;background:transparent;cursor:pointer;font-family:inherit}
-.side-item.active{background:#ffffff18;color:#fff}
+.side-item.active{background:#cfe3ff;color:#173b68}
+.side-item.active:hover{background:#bfd9ff;color:#102e54}
 .dashboard-panel[hidden]{display:none!important}
 @media(max-width:560px){.dashboard-sidebar nav{display:flex}.side-item{width:auto;min-width:0;padding:0 7px;gap:5px;font-size:10px}.side-item>span:first-child{font-size:13px}.side-item .nav-count{font-size:8px}}
 .history-controls{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}.history-controls .filter-label{display:flex;align-items:center;gap:6px}.history-controls input[type=search]{width:min(190px,35vw);height:31px;padding:6px 9px;border:1px solid var(--line);border-radius:7px;font-size:10px}.history-clear{color:#a9424d;border-color:#f0d7da}.history-clear:disabled{opacity:.5;cursor:not-allowed}.history-row-actions{display:flex;align-items:center;gap:9px}.history-delete{padding:6px 9px;border:1px solid #f0d7da;border-radius:7px;background:#fff;color:#a9424d;font-size:9px;font-weight:700}.history-delete:hover,.history-clear:hover:not(:disabled){background:#fff0f1}@media(max-width:650px){.history-controls{justify-content:flex-start}.history-row{align-items:flex-start}.history-row-actions{flex-wrap:wrap;justify-content:flex-end}.history-controls input[type=search]{width:150px}}
