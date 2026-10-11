@@ -4,8 +4,16 @@
 .visitor-page{background:#101c35}
 .visitor-page::before{z-index:0;background:linear-gradient(90deg,#0b1830e8,#0b1830b8 60%,#0b18309c),linear-gradient(0deg,#0b183082,transparent 55%)}
 .visitor-page::after{content:"";position:fixed;z-index:0;inset:0;pointer-events:none;background:url('https://cdn.corenexis.com/f/W3ycKFJg5V8.png') center/ min(78vw,820px) auto no-repeat;mix-blend-mode:multiply;opacity:.86}
-.dashboard-shell{width:100%;max-width:none;background:linear-gradient(rgba(218,234,255,.93),rgba(218,234,255,.93)),url('https://cdn.corenexis.com/f/VDIGJYxvR0U.png') center/cover fixed no-repeat}
+.dashboard-shell{width:100%;max-width:none;background:linear-gradient(rgba(255,255,255,.90),rgba(255,255,255,.90)),url('https://cdn.corenexis.com/f/VDIGJYxvR0U.png') center/cover fixed no-repeat}
 .dashboard-main{background:transparent}
+.dashboard-sidebar{background:#cfe3ff;color:#183047}
+.dashboard-sidebar .wordmark{color:#183047}
+.dashboard-sidebar .brand-symbol{background:#ffffff70;border-color:#8eadd3}
+.dashboard-sidebar .campus-label{color:#527095}
+.dashboard-sidebar .side-item{color:#365676}
+.dashboard-sidebar .side-item.active{background:#b6d4ff;color:#173b68}
+.dashboard-sidebar .side-item.active:hover{background:#a6caff;color:#102e54}
+.dashboard-sidebar .sidebar-bottom{color:#527095}
 .visitor-page .brand-symbol{background:transparent!important;border-color:transparent;box-shadow:none}
 .dashboard-sidebar nav{display:grid}
 .side-item{width:100%;border:0;text-align:left;background:transparent;cursor:pointer;font-family:inherit}
