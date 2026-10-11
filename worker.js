@@ -187,6 +187,12 @@ async function emailDecision(row, qrToken, env) {
       'Content-ID: <visitor-pass>',
       '',
       attachmentLines,
+      `--${boundary}`,
+      `Content-Type: image/png; name="digientry-${row.reference}-QR.png"`,
+      'Content-Transfer-Encoding: base64',
+      `Content-Disposition: attachment; filename="digientry-${row.reference}-QR.png"`,
+      '',
+      attachmentLines,
       `--${boundary}--`,
       '.'
     ].join('\r\n');

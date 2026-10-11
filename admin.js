@@ -27,5 +27,6 @@ document.getElementById('closeSlip').addEventListener('click',()=>document.getEl
 document.getElementById('slipModal').addEventListener('click',event=>{if(event.target.id==='slipModal')event.currentTarget.hidden=true;});
 document.getElementById('slipAccept').addEventListener('click',()=>selectedRequest&&decide(selectedRequest.id,'accepted'));
 document.getElementById('slipDecline').addEventListener('click',()=>selectedRequest&&decide(selectedRequest.id,'declined'));
-checkSession();setInterval(()=>{if(!dashboard.hidden)loadDashboard();},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!dashboard.hidden)loadDashboard();});
+checkSession();setInterval(()=>{if(!document.hidden&&!dashboard.hidden)loadDashboard();},5000);
 
