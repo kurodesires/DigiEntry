@@ -255,6 +255,21 @@ async function handleApi(request, env) {
     return json({ requests: rows.map(publicRequest), counts: { pending: rows.filter(row => row.status === 'pending').length, accepted: rows.filter(row => row.status === 'accepted').length, checkedIn: rows.filter(row => row.status === 'checked_in').length } });
   }
 
+  if (method === 'DELETE' && path === '/api/history') {
+    if (!await staffFor(request, env)) return json({ error: 'Please sign in.' }, 401);
+    const result = await env.DB.prepare(`DELETE FROM requests WHERE status IN ('accepted','declined','checked_in')`).run();
+    return json({ ok: true, deleted: result.meta?.changes || 0 });
+  }
+
+  const historyMatch = path.match(/^\/api\/history\/([^/]+)$/);
+  if (method === 'DELETE' && historyMatch) {
+    if (!await staffFor(request, env)) return json({ error: 'Please sign in.' }, 401);
+    const id = decodeURIComponent(historyMatch[1]);
+    const result = await env.DB.prepare(`DELETE FROM requests WHERE id=? AND status IN ('accepted','declined','checked_in')`).bind(id).run();
+    if (!result.meta?.changes) return json({ error: 'History record not found. Pending requests cannot be removed here.' }, 404);
+    return json({ ok: true, deleted: result.meta.changes });
+  }
+
   if (method === 'POST' && path === '/api/requests') {
     const name = String(body?.name || '').trim(), phone = String(body?.phone || '').trim(), email = String(body?.email || '').trim().toLowerCase(), reason = String(body?.reason || '').trim();
     if (name.length < 2 || name.length > 120 || phone.length < 7 || phone.length > 30 || !emailValid(email) || email.length > 254 || reason.length < 5 || reason.length > 500) return json({ error: 'Please provide a valid name, contact number, email and visit reason.' }, 400);
